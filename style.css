@@ -1,0 +1,292 @@
+/* Reset and Base Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+body {
+    overflow: hidden;
+    background: #2b2b2b;
+    /* 背景色 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 1280x720 固定コンテナ */
+#game-container {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    background: #e6f2f5;
+    /* 爽やかな医療系ライトブルー背景 */
+    overflow: hidden;
+    /* ScaleManagerによりJSでtransformが適用されます */
+}
+
+/* 上部：組み立てエリア */
+#assembly-area {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 1200px;
+    height: 480px;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 4px dashed #bdc3c7;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 下部：パーツ置き場 */
+#inventory-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1280px;
+    height: 180px;
+    background: #dcdde1;
+    border-top: 4px solid #7f8fa6;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 20px;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* パーツ共通スタイル（プレースホルダー） */
+.part-label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 100%;
+}
+
+/* 固定の呼吸器本体 */
+#ventilator {
+    position: absolute;
+    left: 40px;
+    top: 150px;
+    width: 250px;
+    height: 180px;
+    background: linear-gradient(135deg, #f5f6fa, #dcdde1);
+    border: 6px solid #2f3640;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#ventilator .part-label {
+    color: #2f3640;
+    text-shadow: none;
+    font-size: 24px;
+}
+
+/* ドラッグ可能なパーツ */
+.draggable-part {
+    /* position: absolute; はJSで動的に付与します */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    z-index: 10;
+    transition: transform 0.1s;
+    /* 掴んだ時のリアクション用 */
+}
+
+.draggable-part:active {
+    cursor: grabbing;
+    transform: scale(1.05);
+}
+
+/* パーツの個別形状（仮） */
+/* 1. 短いチューブ (緑色系) */
+#part-1 {
+    width: 180px;
+    height: 40px;
+    background: #2ecc71;
+    border: 4px solid #27ae60;
+    border-radius: 10px;
+}
+
+/* 2. 加温加湿器 (青色系、四角) */
+#part-2 {
+    width: 160px;
+    height: 140px;
+    background: #3498db;
+    border: 4px solid #2980b9;
+    border-radius: 20px;
+}
+
+/* 3. 長いチューブ (水色系、長め) */
+#part-3 {
+    width: 400px;
+    height: 40px;
+    background: #00a8ff;
+    border: 4px solid #0097e6;
+    border-radius: 10px;
+}
+
+/* 4. マスク (紫色系、三角形風) */
+#part-4 {
+    width: 150px;
+    height: 180px;
+    background: #9b59b6;
+    border: 4px solid #8e44ad;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    /* 三角形 */
+    align-items: flex-end;
+    /* ラベルを下部に */
+    padding-bottom: 20px;
+}
+
+/* ドロップターゲット（正解位置のガイド） */
+.drop-target {
+    position: absolute;
+    border: 4px dashed rgba(52, 152, 219, 0.5);
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s;
+    z-index: 5;
+}
+
+/* ターゲットのアクティブ状態（現在のステップ） */
+.drop-target.active-target {
+    border-color: #f1c40f;
+    background: rgba(241, 196, 15, 0.2);
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.6);
+    /* 点滅アニメーション */
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+
+/* 各ターゲットの位置とサイズ（大まかな配置） */
+#target-1 {
+    left: 290px;
+    top: 220px;
+    width: 180px;
+    height: 40px;
+}
+
+#target-2 {
+    left: 480px;
+    top: 170px;
+    width: 160px;
+    height: 140px;
+    border-radius: 20px;
+}
+
+#target-3 {
+    left: 650px;
+    top: 220px;
+    width: 400px;
+    height: 40px;
+}
+
+#target-4 {
+    left: 1060px;
+    top: 150px;
+    width: 150px;
+    height: 180px;
+    /* 三角形のターゲットガイド */
+    background: transparent;
+    border: none;
+    /* 擬似要素で破線三角を作る（簡易的） */
+}
+
+#target-4::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 152, 219, 0.1);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+#target-4.active-target::before {
+    background: rgba(241, 196, 15, 0.3);
+}
+
+/* 配置完了時のパーツのスタイル（ターゲットにスナップした状態） */
+.snapped {
+    cursor: default;
+    pointer-events: none;
+    /* ドラッグ不可に */
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.8);
+    /* 成功の緑発光 */
+    border-color: #27ae60 !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* スナップする動き */
+}
+
+/* クリア画面 */
+#clear-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.clear-message {
+    background: #fff;
+    padding: 40px 80px;
+    border-radius: 30px;
+    font-size: 48px;
+    font-weight: bold;
+    color: #e74c3c;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 8px solid #f1c40f;
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}

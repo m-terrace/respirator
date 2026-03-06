@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>在宅用人工呼吸器 回路組み立て</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 組み立てエリア (上部) -->
+        <div id="assembly-area">
+            <!-- 固定の呼吸器本体 -->
+            <div id="ventilator" class="part-fixed">
+                <div class="part-label">呼吸器</div>
+            </div>
+
+            <!-- ドロップターゲット -->
+            <div id="target-1" class="drop-target" data-step="1"></div>
+            <div id="target-2" class="drop-target" data-step="2"></div>
+            <div id="target-3" class="drop-target" data-step="3"></div>
+            <div id="target-4" class="drop-target" data-step="4"></div>
+        </div>
+
+        <!-- パーツ置き場 (下部) -->
+        <div id="inventory-area">
+            <div class="inventory-bg"></div>
+            <!-- ドラッグ可能なパーツ群 -->
+            <!-- part-1: 短いチューブ (呼吸器〜加温加湿器) -->
+            <div id="part-1" class="draggable-part" data-id="1">
+                <div class="part-label">短いチューブ</div>
+            </div>
+            
+            <!-- part-2: 加温加湿器 -->
+            <div id="part-2" class="draggable-part" data-id="2">
+                <div class="part-label">加温加湿器</div>
+            </div>
+            
+            <!-- part-3: 長いチューブ -->
+            <div id="part-3" class="draggable-part" data-id="3">
+                <div class="part-label">長いチューブ</div>
+            </div>
+            
+            <!-- part-4: マスク/接続部 -->
+            <div id="part-4" class="draggable-part" data-id="4">
+                <div class="part-label">マスク</div>
+            </div>
+        </div>
+
+        <!-- クリア画面オーバーレイ -->
+        <div id="clear-overlay" class="hidden">
+            <div class="clear-message">クリア！<br>正しく繋がりました</div>
+        </div>
+    </div>
+
+    <!-- 共有オーディオ (オプション) -->
+    <audio id="se-snap" src="snap.mp3" preload="auto"></audio>
+    <audio id="se-clear" src="clear.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
