@@ -1,49 +1,92 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>在宅用人工呼吸器 回路組み立て</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="game-container">
         <!-- 組み立てエリア (上部) -->
         <div id="assembly-area">
-            <!-- 固定の呼吸器本体 -->
-            <div id="ventilator" class="part-fixed">
-                <div class="part-label">呼吸器</div>
+            <!-- ベースとなる完成図 -->
+            <img src="assets/all.PNG" id="app-image-clear" alt="cleared machine">
+
+            <!-- 上から被せる各パーツのシルエット -->
+            <div id="silhouettes" class="silhouettes-container">
+                <img src="assets/cleaned_respirator_s_position.png" class="silhouette-part" id="sil-1" data-step="1">
+                <img src="assets/cleaned_bag_s_position.png" class="silhouette-part" id="sil-2" data-step="2">
+                <img src="assets/cleaned_connect_s_position.png" class="silhouette-part" id="sil-3" data-step="3">
+                <img src="assets/cleaned_filter_s_position.png" class="silhouette-part" id="sil-4" data-step="4">
+                <img src="assets/cleaned_humidifier1_s_position.png" class="silhouette-part" id="sil-5" data-step="5">
+                <img src="assets/cleaned_humidifier2_s_position.png" class="silhouette-part" id="sil-6" data-step="6">
+                <img src="assets/cleaned_kairo1_s_position.png" class="silhouette-part" id="sil-7" data-step="7">
+                <img src="assets/cleaned_kairo2_s_position.png" class="silhouette-part" id="sil-8" data-step="8">
             </div>
 
-            <!-- ドロップターゲット -->
             <div id="target-1" class="drop-target" data-step="1"></div>
             <div id="target-2" class="drop-target" data-step="2"></div>
             <div id="target-3" class="drop-target" data-step="3"></div>
             <div id="target-4" class="drop-target" data-step="4"></div>
+            <div id="target-5" class="drop-target" data-step="5"></div>
+            <div id="target-6" class="drop-target" data-step="6"></div>
+            <div id="target-7" class="drop-target" data-step="7"></div>
+            <div id="target-8" class="drop-target" data-step="8"></div>
         </div>
 
         <!-- パーツ置き場 (下部) -->
         <div id="inventory-area">
             <div class="inventory-bg"></div>
-            <!-- ドラッグ可能なパーツ群 -->
-            <!-- part-1: 短いチューブ (呼吸器〜加温加湿器) -->
-            <div id="part-1" class="draggable-part" data-id="1">
-                <div class="part-label">短いチューブ</div>
+            <div class="inventory-row">
+                <div class="part-slot">
+                    <div id="part-1" class="draggable-part" data-id="1"
+                        data-tooltip="赤ちゃんの呼吸を助けるために、設定した回数や圧で空気を送る機械なんだ。"><img src="assets/respirator.PNG"
+                            alt="respirator"></div>
+                    <div class="part-label">人工呼吸器</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-2" class="draggable-part" data-id="2" data-tooltip="人工呼吸器がちゃんと動くか確認するときに使う、模擬の肺なんだ。">
+                        <img src="assets/bag.PNG" alt="bag">
+                    </div>
+                    <div class="part-label">テスト肺</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-3" class="draggable-part" data-id="3"
+                        data-tooltip="気管カニューレと回路をつなぐ柔らかい管で、首の動きの衝撃を和らげてくれるんだよ"><img src="assets/connect.PNG"
+                            alt="connect"></div>
+                    <div class="part-label">カテーテルマウント</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-4" class="draggable-part" data-id="4" data-tooltip="細菌やウイルスが回路に入らないように守る役割があるんだ。"><img
+                            src="assets/filter.PNG" alt="filter"></div>
+                    <div class="part-label">バクテリアフィルター</div>
+                </div>
             </div>
-            
-            <!-- part-2: 加温加湿器 -->
-            <div id="part-2" class="draggable-part" data-id="2">
-                <div class="part-label">加温加湿器</div>
-            </div>
-            
-            <!-- part-3: 長いチューブ -->
-            <div id="part-3" class="draggable-part" data-id="3">
-                <div class="part-label">長いチューブ</div>
-            </div>
-            
-            <!-- part-4: マスク/接続部 -->
-            <div id="part-4" class="draggable-part" data-id="4">
-                <div class="part-label">マスク</div>
+            <div class="inventory-row">
+                <div class="part-slot">
+                    <div id="part-5" class="draggable-part" data-id="5"
+                        data-tooltip="送る空気を温かくして湿らせることで、気道が乾かないようにしているんだ"><img src="assets/humidifier1.PNG"
+                            alt="humidifier1"></div>
+                    <div class="part-label">加温加湿器</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-6" class="draggable-part" data-id="6" data-tooltip="ここに水を入れて、人工呼吸器から送る空気を加湿するんだ。"><img
+                            src="assets/humidifier2.PNG" alt="humidifier2"></div>
+                    <div class="part-label">加湿チャンバー</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-7" class="draggable-part" data-id="7" data-tooltip="人工呼吸器から患者さんへ、空気を送るチューブなんだ。"><img
+                            src="assets/kairo1.PNG" alt="kairo1"></div>
+                    <div class="part-label">吸気回路</div>
+                </div>
+                <div class="part-slot">
+                    <div id="part-8" class="draggable-part" data-id="8" data-tooltip="人工呼吸器や加湿器と、メインの回路をつなぐために使うんだ。">
+                        <img src="assets/kairo2.PNG" alt="kairo2"></div>
+                    <div class="part-label">短い吸気回路</div>
+                </div>
             </div>
         </div>
 
@@ -53,10 +96,14 @@
         </div>
     </div>
 
-    <!-- 共有オーディオ (オプション) -->
-    <audio id="se-snap" src="snap.mp3" preload="auto"></audio>
-    <audio id="se-clear" src="clear.mp3" preload="auto"></audio>
+    <!-- 音声素材 -->
+    <audio id="se-bgm" src="assets/bgm.mp3" loop preload="auto"></audio>
+    <audio id="se-take" src="assets/take.mp3" preload="auto"></audio>
+    <audio id="se-set" src="assets/set.mp3" preload="auto"></audio>
+    <audio id="se-miss" src="assets/miss.mp3" preload="auto"></audio>
+    <audio id="se-success" src="assets/success.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
 </body>
+
 </html>

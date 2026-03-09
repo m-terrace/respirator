@@ -75,8 +75,9 @@ const ScaleManager = {
  */
 const GameManager = {
     currentStep: 1, // 現在はめるべきパーツ/ターゲットの番号
-    totalSteps: 4,  // 全部で4パーツ
+    totalSteps: 8,  // 全部で8パーツ
     isDragging: false,
+    bgmStarted: false,
     draggedElement: null,
     dragOffset: { x: 0, y: 0 },
     initialPositions: {}, // インベントリの初期位置を保存
@@ -126,12 +127,8 @@ const GameManager = {
     },
 
     updateActiveTarget() {
-        document.querySelectorAll('.drop-target').forEach(target => {
-            target.classList.remove('active-target');
-            if (parseInt(target.dataset.step) === this.currentStep) {
-                target.classList.add('active-target');
-            }
-        });
+        // 順番の制限を取り払ったため、全てのターゲットを常時アクティブ（あるいは非表示のまま）にします。
+        // ここでは特にクラスの付け外しは行わず、全てのステップで自由な順序で配置できるようにします。
     },
 
     setupDragEvents() {
@@ -152,8 +149,25 @@ const GameManager = {
     },
 
     dragStart(e, element) {
+        // bgm start on interact
+        if (!this.bgmStarted) {
+            const bgm = document.getElementById('se-bgm');
+            if (bgm) {
+                bgm.volume = 0.3; // slightly lower volume
+                bgm.play().catch(e => console.log("Audio play blocked."));
+            }
+            this.bgmStarted = true;
+        }
+
         // すでにスナップ済みのパーツは動かさない
         if (element.classList.contains('snapped')) return;
+
+        // take sfx
+        const seTake = document.getElementById('se-take');
+        if (seTake) {
+            seTake.currentTime = 0;
+            seTake.play().catch(e => console.log("Audio play blocked."));
+        }
 
         // 現在のステップ以外のパーツは掴めない（あるいは掴めるけど正解にならないようにする）
         // ※今回は「触れるけど弾かれる」方がゲームっぽいので掴めるようにしておく
@@ -216,9 +230,7 @@ const GameManager = {
     checkDrop(element) {
         const partId = parseInt(element.dataset.id);
 
-        if (partId !== this.currentStep) return false;
-
-        const target = document.querySelector(`.drop-target[data-step="${this.currentStep}"]`);
+        const target = document.querySelector(`.drop-target[data-step="${partId}"]`);
         if (!target) return false;
 
         // ドラッグ要素とターゲットは同じ game-container 内にあるので、直接座標比較が可能
@@ -246,13 +258,14 @@ const GameManager = {
 
         // 判定距離（中心点同士の距離）
         const distance = Math.hypot(elCenter.x - tCenter.x, elCenter.y - tCenter.y);
-        const hitRadius = 150; // 少し広めに判定
+        const hitRadius = 250; // 少し広めに判定 (ユーザーの要望でさらに拡大)
 
         return distance < hitRadius;
     },
 
     handleSuccessDrop(element) {
-        const target = document.querySelector(`.drop-target[data-step="${this.currentStep}"]`);
+        const partId = parseInt(element.dataset.id);
+        const target = document.querySelector(`.drop-target[data-step="${partId}"]`);
 
         // ターゲットの位置にピタッと合わせる
         // ターゲットはassembly-area(+40, +40)内にあるため座標を補正
@@ -272,24 +285,29 @@ const GameManager = {
         element.style.left = `${snapX}px`;
         element.style.top = `${snapY}px`;
 
-        // 成功状態をつける
+        // 成功状態をつける (画像を見えなくする)
         element.classList.add('snapped');
+        element.querySelector('img').style.opacity = '0'; // すでに完成図とシルエットがあるので、パーツ画像自体は消すが枠は残してツールチップを活かす
         target.classList.remove('active-target');
 
-        // SE再生 (任意)
-        const se = document.getElementById('se-snap');
+        // 対応するシルエットを消す
+        const sil = document.getElementById(`sil-${partId}`);
+        if (sil) {
+            sil.classList.add('hidden-silhouette');
+        }
+
+        // SE再生 (正解)
+        const se = document.getElementById('se-set');
         if (se) {
             se.currentTime = 0;
             se.play().catch(e => console.log("Audio play blocked."));
         }
 
-        // 次のステップへ
-        this.currentStep++;
+        // 配置済みパーツのカウントを増やす
+        this.completedSteps = (this.completedSteps || 0) + 1;
 
-        if (this.currentStep > this.totalSteps) {
+        if (this.completedSteps >= this.totalSteps) {
             this.handleGameClear();
-        } else {
-            this.updateActiveTarget();
         }
 
         // トランジション終わったら元に戻す(次回掴んだ時用、今回はもう掴めないので不要だけど一応)
@@ -299,6 +317,13 @@ const GameManager = {
     },
 
     handleFailDrop(element) {
+        // ミス音
+        const seMiss = document.getElementById('se-miss');
+        if (seMiss) {
+            seMiss.currentTime = 0;
+            seMiss.play().catch(e => console.log("Audio play blocked."));
+        }
+
         // 初期位置に戻るアニメーション
         const initial = this.initialPositions[element.id];
 
@@ -314,7 +339,15 @@ const GameManager = {
     handleGameClear() {
         console.log("Game Clear!");
 
-        const se = document.getElementById('se-clear');
+        // bgmを止める
+        const bgm = document.getElementById('se-bgm');
+        if (bgm) {
+            bgm.pause();
+            bgm.currentTime = 0;
+        }
+
+        // クリア音
+        const se = document.getElementById('se-success');
         if (se) {
             se.currentTime = 0;
             se.play().catch(e => console.log("Audio play blocked."));
@@ -322,7 +355,13 @@ const GameManager = {
 
         // 少し待ってからクリア画面
         setTimeout(() => {
-            document.getElementById('clear-overlay').classList.remove('hidden');
+            // シルエットの上に完成図をアニメーション付きで表示
+            document.getElementById('app-image-clear').classList.remove('hidden');
+
+            // もう少し待ってからメッセージパネル表示
+            setTimeout(() => {
+                document.getElementById('clear-overlay').classList.remove('hidden');
+            }, 500);
 
             // ティラノビルダー連携用（必要に応じて）
             // if(window.parent && window.parent.TYRANO) {
