@@ -15,16 +15,15 @@
             <!-- ベースとなる完成図 -->
             <img src="assets/all.PNG" id="app-image-clear" alt="cleared machine">
 
-            <!-- 上から被せる各パーツのシルエット -->
             <div id="silhouettes" class="silhouettes-container">
-                <img src="assets/cleaned_respirator_s_position.png" class="silhouette-part" id="sil-1" data-step="1">
-                <img src="assets/cleaned_bag_s_position.png" class="silhouette-part" id="sil-2" data-step="2">
-                <img src="assets/cleaned_connect_s_position.png" class="silhouette-part" id="sil-3" data-step="3">
-                <img src="assets/cleaned_filter_s_position.png" class="silhouette-part" id="sil-4" data-step="4">
-                <img src="assets/cleaned_humidifier1_s_position.png" class="silhouette-part" id="sil-5" data-step="5">
-                <img src="assets/cleaned_humidifier2_s_position.png" class="silhouette-part" id="sil-6" data-step="6">
-                <img src="assets/cleaned_kairo1_s_position.png" class="silhouette-part" id="sil-7" data-step="7">
-                <img src="assets/cleaned_kairo2_s_position.png" class="silhouette-part" id="sil-8" data-step="8">
+                <img src="assets/padded_respirator_s.png" class="silhouette-part" id="sil-1" data-step="1">
+                <img src="assets/padded_bag_s.png" class="silhouette-part" id="sil-2" data-step="2">
+                <img src="assets/padded_connect_s.png" class="silhouette-part" id="sil-3" data-step="3">
+                <img src="assets/padded_filter_s.png" class="silhouette-part" id="sil-4" data-step="4">
+                <img src="assets/padded_humidifer1_s.png" class="silhouette-part" id="sil-5" data-step="5">
+                <img src="assets/padded_humidifer2_s.png" class="silhouette-part" id="sil-6" data-step="6">
+                <img src="assets/padded_kairo1_s.png" class="silhouette-part" id="sil-7" data-step="7">
+                <img src="assets/padded_kairo2_s.png" class="silhouette-part" id="sil-8" data-step="8">
             </div>
 
             <div id="target-1" class="drop-target" data-step="1"></div>
@@ -84,9 +83,25 @@
                 </div>
                 <div class="part-slot">
                     <div id="part-8" class="draggable-part" data-id="8" data-tooltip="人工呼吸器や加湿器と、メインの回路をつなぐために使うんだ。">
-                        <img src="assets/kairo2.PNG" alt="kairo2"></div>
+                        <img src="assets/kairo2.PNG" alt="kairo2">
+                    </div>
                     <div class="part-label">短い吸気回路</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- キャラクターエリア -->
+        <div id="characters-area">
+            <img src="assets/satou.png" id="char-satou" class="character hidden" alt="佐藤さん">
+            <img src="assets/takei.png" id="char-takei" class="character hidden" alt="武井さん">
+        </div>
+
+        <!-- ダイアログ（会話）オーバーレイ -->
+        <div id="dialogue-overlay" class="hidden">
+            <div id="dialogue-box">
+                <div id="speaker-name">Satou</div>
+                <div id="dialogue-text"></div>
+                <div class="next-indicator">▼</div>
             </div>
         </div>
 

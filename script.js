@@ -71,6 +71,163 @@ const ScaleManager = {
 };
 
 /**
+ * シナリオデータ定義
+ */
+const SCENARIO_DATA = [
+    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ回路をくんでみよう。\n下段にある機材を上段の正しい位置にドラッグするんだ。' },
+    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ最初は僕がやってみせるね。\nまず下段の人工呼吸器をつかんでと・・・' },
+    { type: 'auto_drag', target: 1 }, // respirator
+    { type: 'dialogue', speaker: 'Satou', text: 'はい。人工呼吸器はここだとします。' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほど。' },
+    { type: 'dialogue', speaker: 'Satou', text: 'テスト肺も置いておくね。\nこれを患者さんだと思ってください。' },
+    { type: 'auto_drag', target: 2 }, // bag
+    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ呼吸器の回路を辿っていこう。まず呼吸器の出口にはバクテリアフィルターをつけます。それを掴んで正しい位置にドラッグしてみよう。' },
+    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！' },
+    { type: 'wait_drag', target: 4 }, // filter
+    { type: 'dialogue', speaker: 'Satou', text: 'OK！その調子' },
+    { type: 'dialogue', speaker: 'Satou', text: '次は短い呼吸回路だね。呼吸器と加温加湿器をつなぐんだ。' },
+    { type: 'wait_drag', target: 8 }, // kairo2
+    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器をセットしよう。' },
+    { type: 'wait_drag', target: 5 }, // humidifier1
+    { type: 'dialogue', speaker: 'Satou', text: '加温加湿器に加湿チャンバーをセットしてみよう' },
+    { type: 'wait_drag', target: 6 }, // humidifier2
+    { type: 'dialogue', speaker: 'Takei', text: 'こうですね！' },
+    { type: 'dialogue', speaker: 'Satou', text: 'これで呼吸器から出てきた空気が加温加湿されるんだ。' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほど' },
+    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器から出て、患者さんにつなぐ回路を繋いでみよう。\n患者さんから呼吸器に戻る回路とセットになってるよ。' },
+    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！' },
+    { type: 'wait_drag', target: 7 }, // kairo1
+    { type: 'dialogue', speaker: 'Satou', text: 'いいね！\n次はコネクターを繋ごう。\n柔らかい管で、患者さんの動きを和らげる働きをするよ。' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほどー' },
+    { type: 'wait_drag', target: 3 }, // connect
+    { type: 'dialogue', speaker: 'Satou', text: 'これで完成！ナイスバッティン！' },
+    { type: 'dialogue', speaker: 'Takei', text: 'ありがとうございました！' }
+];
+
+/**
+ * シナリオ進行・UI管理
+ */
+const ScenarioManager = {
+    currentIndex: 0,
+    isAnimatingText: false,
+    textInterval: null,
+
+    init() {
+        this.overlay = document.getElementById('dialogue-overlay');
+        this.box = document.getElementById('dialogue-box');
+        this.speakerName = document.getElementById('speaker-name');
+        this.dialogueText = document.getElementById('dialogue-text');
+        this.charSatou = document.getElementById('char-satou');
+        this.charTakei = document.getElementById('char-takei');
+
+        // ダイアログクリックで進行
+        this.box.addEventListener('click', () => this.handleBoxClick());
+    },
+
+    startScenerio() {
+        this.currentIndex = 0;
+        this.processStep();
+    },
+
+    processStep() {
+        if (this.currentIndex >= SCENARIO_DATA.length) {
+            this.overlay.classList.add('hidden');
+            this.setCharactersState(null);
+            document.body.classList.remove('dialogue-active');
+            GameManager.handleGameClear();
+            return;
+        }
+
+        const step = SCENARIO_DATA[this.currentIndex];
+
+        if (step.type === 'dialogue') {
+            this.showDialogue(step);
+        } else if (step.type === 'auto_drag') {
+            this.hideDialogue();
+            document.body.classList.add('dialogue-active');
+            GameManager.executeAutoDrag(step.target, () => {
+                this.currentIndex++;
+                this.processStep();
+            });
+        } else if (step.type === 'wait_drag') {
+            this.hideDialogue();
+            document.body.classList.remove('dialogue-active');
+            GameManager.setWaitTarget(step.target);
+            // ユーザーがドラッグ成功するまで待機（GameManagerから呼ばれる）
+        }
+    },
+
+    showDialogue(step) {
+        document.body.classList.add('dialogue-active');
+        this.overlay.classList.remove('hidden');
+
+        this.speakerName.textContent = step.speaker;
+        this.setCharactersState(step.speaker);
+
+        // テキストアニメーション
+        this.dialogueText.textContent = '';
+        this.isAnimatingText = true;
+        let charIndex = 0;
+        const text = step.text;
+
+        clearInterval(this.textInterval);
+        this.textInterval = setInterval(() => {
+            this.dialogueText.textContent += text.charAt(charIndex);
+            charIndex++;
+            if (charIndex >= text.length) {
+                this.finishText(text);
+            }
+        }, 30); // 1文字30ms
+    },
+
+    finishText(fullText) {
+        clearInterval(this.textInterval);
+        this.dialogueText.textContent = fullText;
+        this.isAnimatingText = false;
+    },
+
+    hideDialogue() {
+        this.overlay.classList.add('hidden');
+    },
+
+    setCharactersState(speaker) {
+        // 全員表示＆リセット
+        this.charSatou.classList.remove('hidden', 'talking');
+        this.charTakei.classList.remove('hidden', 'talking');
+
+        if (speaker === 'Satou') {
+            this.charSatou.classList.add('talking');
+        } else if (speaker === 'Takei') {
+            this.charTakei.classList.add('talking');
+        }
+    },
+
+    handleBoxClick() {
+        if (this.isAnimatingText) {
+            // アニメーションスキップ
+            const step = SCENARIO_DATA[this.currentIndex];
+            this.finishText(step.text);
+        } else {
+            // 次のステップへ
+            const step = SCENARIO_DATA[this.currentIndex];
+            if (step && step.type === 'dialogue') {
+                this.currentIndex++;
+                this.processStep();
+            }
+        }
+    },
+
+    // ドラッグ成功時に呼ばれる
+    advanceFromDrag() {
+        this.currentIndex++;
+        // 少しディレイを入れてから次のステップへ
+        setTimeout(() => {
+            this.processStep();
+        }, 800);
+    }
+};
+
+/**
  * ゲームのメインロジック
  */
 const GameManager = {
@@ -82,11 +239,33 @@ const GameManager = {
     dragOffset: { x: 0, y: 0 },
     initialPositions: {}, // インベントリの初期位置を保存
 
+    currentWaitTarget: null, // シナリオから指示された待機ターゲットID
+
     init() {
         ScaleManager.init();
         this.cacheInitialPositions();
-        this.setupTargets();
         this.setupDragEvents();
+
+        ScenarioManager.init();
+
+        // 最初のクリック/タップでBGMを再生する（ブラウザの自動再生ブロック対策）
+        const playBgmOnInteraction = () => {
+            if (!this.bgmStarted) {
+                const bgm = document.getElementById('se-bgm');
+                if (bgm) {
+                    bgm.volume = 0.3;
+                    bgm.play().catch(e => console.log("Audio play blocked."));
+                }
+                this.bgmStarted = true;
+            }
+            document.removeEventListener('click', playBgmOnInteraction);
+            document.removeEventListener('touchstart', playBgmOnInteraction);
+        };
+        document.addEventListener('click', playBgmOnInteraction);
+        document.addEventListener('touchstart', playBgmOnInteraction, { passive: true });
+
+        // シナリオは画面クリックを待たずに即座に開始させる
+        ScenarioManager.startScenerio();
     },
 
     cacheInitialPositions() {
@@ -94,21 +273,17 @@ const GameManager = {
         const container = document.getElementById('game-container');
         const clearOverlay = document.getElementById('clear-overlay');
 
-        // 1. Flexboxでレイアウトされた初期の画面座標を取得
         const scale = ScaleManager.scale;
         const containerRect = container.getBoundingClientRect();
 
         parts.forEach(part => {
             const rect = part.getBoundingClientRect();
-            // スケールを考慮してゲーム内(1280x720)座標に変換
             const x = (rect.left - containerRect.left) / scale;
             const y = (rect.top - containerRect.top) / scale;
 
             this.initialPositions[part.id] = { x, y };
         });
 
-        // 2. DOMツリー上でgame-container直下に移動し、絶対配置に変更
-        // これによって inventory-area に制限されず自由にドラッグ可能になる
         parts.forEach(part => {
             const pos = this.initialPositions[part.id];
 
@@ -121,14 +296,47 @@ const GameManager = {
         });
     },
 
-    setupTargets() {
-        // 最初のターゲットだけアクティブにする
-        this.updateActiveTarget();
+    setWaitTarget(targetId) {
+        this.currentWaitTarget = targetId;
+        // 特定のパーツを目立たせる（オプション）
+        // document.querySelectorAll('.draggable-part').forEach(...)
     },
 
-    updateActiveTarget() {
-        // 順番の制限を取り払ったため、全てのターゲットを常時アクティブ（あるいは非表示のまま）にします。
-        // ここでは特にクラスの付け外しは行わず、全てのステップで自由な順序で配置できるようにします。
+    // 自動ドラッグアニメーション（佐藤さんのデモ用）
+    executeAutoDrag(targetId, callback) {
+        const element = document.getElementById(`part-${targetId}`);
+        if (!element) {
+            if (callback) callback();
+            return;
+        }
+
+        // 持ち上げ効果音
+        const seTake = document.getElementById('se-take');
+        if (seTake) { seTake.currentTime = 0; seTake.play().catch(() => { }); }
+
+        // 要素を少し浮かせる
+        element.style.transition = 'transform 0.3s ease';
+        element.style.transform = 'scale(1.1)';
+        element.style.zIndex = '100';
+
+        setTimeout(() => {
+            // 目標座標へ移動
+            const target = document.querySelector(`.drop-target[data-step="${targetId}"]`);
+            const tLeft = target.offsetLeft + 40;
+            const tTop = target.offsetTop + 40;
+            const snapX = tLeft + (target.offsetWidth - element.offsetWidth) / 2;
+            const snapY = tTop + (target.offsetHeight - element.offsetHeight) / 2;
+
+            element.style.transition = 'all 1.0s cubic-bezier(0.25, 0.8, 0.25, 1)';
+            element.style.left = `${snapX}px`;
+            element.style.top = `${snapY}px`;
+
+            setTimeout(() => {
+                element.style.transform = 'scale(1.0)';
+                this.handleSuccessDrop(element, true); // true = 自動デモフラグ
+                if (callback) callback();
+            }, 1000);
+        }, 400);
     },
 
     setupDragEvents() {
@@ -149,18 +357,27 @@ const GameManager = {
     },
 
     dragStart(e, element) {
-        // bgm start on interact
-        if (!this.bgmStarted) {
-            const bgm = document.getElementById('se-bgm');
-            if (bgm) {
-                bgm.volume = 0.3; // slightly lower volume
-                bgm.play().catch(e => console.log("Audio play blocked."));
-            }
-            this.bgmStarted = true;
-        }
-
         // すでにスナップ済みのパーツは動かさない
         if (element.classList.contains('snapped')) return;
+
+        // ダイアログ表示中など、インターフェースロック時は何もしない
+        if (document.body.classList.contains('dialogue-active')) return;
+
+        // シナリオで待機中のターゲットがある場合、それ以外は掴んでも無効にする（あるいはエラー音）
+        const partId = parseInt(element.dataset.id);
+        if (this.currentWaitTarget !== null && partId !== this.currentWaitTarget) {
+            const seMiss = document.getElementById('se-miss');
+            if (seMiss) {
+                seMiss.currentTime = 0;
+                seMiss.play().catch(e => console.log("Audio play blocked."));
+            }
+            // 揺れるアニメーションなどを入れると親切
+            element.style.transform = 'translate(5px, 0)';
+            setTimeout(() => element.style.transform = 'translate(-5px, 0)', 50);
+            setTimeout(() => element.style.transform = 'translate(5px, 0)', 100);
+            setTimeout(() => element.style.transform = 'translate(0, 0)', 150);
+            return;
+        }
 
         // take sfx
         const seTake = document.getElementById('se-take');
@@ -263,12 +480,11 @@ const GameManager = {
         return distance < hitRadius;
     },
 
-    handleSuccessDrop(element) {
+    handleSuccessDrop(element, isAutoDemo = false) {
         const partId = parseInt(element.dataset.id);
         const target = document.querySelector(`.drop-target[data-step="${partId}"]`);
 
         // ターゲットの位置にピタッと合わせる
-        // ターゲットはassembly-area(+40, +40)内にあるため座標を補正
         const tLeft = target.offsetLeft + 40;
         const tTop = target.offsetTop + 40;
         const tWidth = target.offsetWidth;
@@ -277,7 +493,6 @@ const GameManager = {
         const elWidth = element.offsetWidth;
         const elHeight = element.offsetHeight;
 
-        // ターゲットの中心にパーツの中心を合わせる座標
         const snapX = tLeft + (tWidth - elWidth) / 2;
         const snapY = tTop + (tHeight - elHeight) / 2;
 
@@ -285,35 +500,30 @@ const GameManager = {
         element.style.left = `${snapX}px`;
         element.style.top = `${snapY}px`;
 
-        // 成功状態をつける (画像を見えなくする)
         element.classList.add('snapped');
-        element.querySelector('img').style.opacity = '0'; // すでに完成図とシルエットがあるので、パーツ画像自体は消すが枠は残してツールチップを活かす
-        target.classList.remove('active-target');
+        element.querySelector('img').style.opacity = '0';
 
-        // 対応するシルエットを消す
         const sil = document.getElementById(`sil-${partId}`);
         if (sil) {
             sil.classList.add('hidden-silhouette');
         }
 
-        // SE再生 (正解)
+        // SE再生
         const se = document.getElementById('se-set');
         if (se) {
             se.currentTime = 0;
             se.play().catch(e => console.log("Audio play blocked."));
         }
 
-        // 配置済みパーツのカウントを増やす
-        this.completedSteps = (this.completedSteps || 0) + 1;
-
-        if (this.completedSteps >= this.totalSteps) {
-            this.handleGameClear();
-        }
-
-        // トランジション終わったら元に戻す(次回掴んだ時用、今回はもう掴めないので不要だけど一応)
+        // トランジション終わったらスタイルリセット
         setTimeout(() => {
             element.style.transition = 'transform 0.1s';
         }, 300);
+
+        // シナリオ進行を呼ぶ（手動ドラッグ成功時のみ）
+        if (!isAutoDemo) {
+            ScenarioManager.advanceFromDrag();
+        }
     },
 
     handleFailDrop(element) {

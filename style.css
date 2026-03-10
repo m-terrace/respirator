@@ -374,3 +374,133 @@ body {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+
+/* ---------------------------------
+   シナリオUI (キャラクター & ダイアログ)
+   --------------------------------- */
+
+#characters-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 40;
+    /* ターゲットより上、ただしダイアログより下 */
+}
+
+.character {
+    position: absolute;
+    height: 380px;
+    /* キャラ画像の高さを縮小 */
+    bottom: 300px;
+    /* 下段のインベントリエリア（height: 300px）の真上に配置 */
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+}
+
+.character:not(.talking) {
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3)) brightness(0.7);
+    transform: scale(0.95);
+}
+
+/* 佐藤さん (左) */
+#char-satou {
+    left: 10px;
+}
+
+/* 武井さん (右) */
+#char-takei {
+    right: 10px;
+}
+
+/* ダイアログボックス */
+#dialogue-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    pointer-events: none;
+    /* デフォルトでは何もしない。子要素で必要な時だけauto */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 30px;
+    transition: opacity 0.3s;
+}
+
+#dialogue-box {
+    position: relative;
+    width: 900px;
+    height: 180px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 4px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    padding: 30px 40px;
+    color: #fff;
+    font-size: 26px;
+    line-height: 1.6;
+    cursor: pointer;
+    /* 普段はマウスクリックを受け付けない（親からnoneを継承）。表示時だけautoにする */
+}
+
+#dialogue-overlay:not(.hidden) #dialogue-box {
+    pointer-events: auto;
+}
+
+#speaker-name {
+    position: absolute;
+    top: -30px;
+    left: 40px;
+    background: #3498db;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    padding: 5px 25px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+#dialogue-text {
+    width: 100%;
+    height: 100%;
+    /* テキストアニメーション用の表示エリア */
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+/* 次へ進むマーク */
+.next-indicator {
+    position: absolute;
+    bottom: 15px;
+    right: 25px;
+    font-size: 24px;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(10px);
+        opacity: 0.5;
+    }
+}
+
+/* JS側からクラス制御でインベントリ操作をロックする用 */
+body.dialogue-active #inventory-area {
+    pointer-events: none;
+}
+
+body.dialogue-active .draggable-part {
+    pointer-events: none;
+}
