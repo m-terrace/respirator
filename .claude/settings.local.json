@@ -4,7 +4,8 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(python3 pad_by_css.py)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(python3 -:*)"
     ]
   }
 }
