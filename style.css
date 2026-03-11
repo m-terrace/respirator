@@ -253,68 +253,68 @@ body {
 }
 
 
-/* 各ターゲットの位置とサイズ（仮の当たり判定領域） */
+/* 各ターゲットの位置とサイズ（all.PNGに合わせて補正済み: dx=82, dy=192 canvas px） */
 #target-1 {
-    left: 374.6px;
-    top: 34.5px;
-    width: 114.8px;
-    height: 121.9px;
+    left: 375.5px;
+    top: 107.3px;
+    width: 115.7px;
+    height: 122.8px;
 }
 
 /* bag (target-2) */
 #target-2 {
-    left: 678.4px;
-    top: 90.8px;
-    width: 118.5px;
-    height: 42.4px;
+    left: 681.6px;
+    top: 164.0px;
+    width: 119.4px;
+    height: 42.7px;
 }
 
 /* connect (target-3) */
 #target-3 {
-    left: 658.5px;
-    top: 106.1px;
-    width: 29.2px;
-    height: 55.5px;
+    left: 661.6px;
+    top: 179.5px;
+    width: 29.5px;
+    height: 55.9px;
 }
 
 /* filter (target-4) */
 #target-4 {
-    left: 450.8px;
-    top: 144.0px;
-    width: 31.5px;
-    height: 33.4px;
+    left: 452.2px;
+    top: 217.7px;
+    width: 31.7px;
+    height: 33.6px;
 }
 
 /* humidifier1 (target-5) */
 #target-5 {
-    left: 543.0px;
-    top: 70.9px;
-    width: 64.5px;
-    height: 93.0px;
+    left: 545.2px;
+    top: 144.0px;
+    width: 65.0px;
+    height: 93.7px;
 }
 
 /* humidifier2 (target-6) */
 #target-6 {
-    left: 545.6px;
-    top: 59.6px;
-    width: 60.0px;
-    height: 39.0px;
+    left: 547.8px;
+    top: 132.7px;
+    width: 60.5px;
+    height: 39.3px;
 }
 
 /* kairo1 (target-7) */
 #target-7 {
-    left: 373.1px;
-    top: 143.2px;
-    width: 447.0px;
-    height: 224.6px;
+    left: 374.0px;
+    top: 216.9px;
+    width: 450.5px;
+    height: 226.4px;
 }
 
 /* kairo2 (target-8) */
 #target-8 {
-    left: 459.0px;
-    top: 50.2px;
-    width: 106.5px;
-    height: 157.9px;
+    left: 460.5px;
+    top: 123.2px;
+    width: 107.3px;
+    height: 159.1px;
 }
 
 
