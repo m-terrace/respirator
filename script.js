@@ -298,8 +298,14 @@ const GameManager = {
 
     setWaitTarget(targetId) {
         this.currentWaitTarget = targetId;
-        // 特定のパーツを目立たせる（オプション）
-        // document.querySelectorAll('.draggable-part').forEach(...)
+        // 正解パーツを金色にハイライト
+        document.querySelectorAll('.draggable-part').forEach(el => {
+            if (parseInt(el.dataset.id) === targetId) {
+                el.classList.add('highlight-part');
+            } else {
+                el.classList.remove('highlight-part');
+            }
+        });
     },
 
     // 自動ドラッグアニメーション（佐藤さんのデモ用）
@@ -501,6 +507,7 @@ const GameManager = {
         element.style.top = `${snapY}px`;
 
         element.classList.add('snapped');
+        element.classList.remove('highlight-part');
         element.querySelector('img').style.opacity = '0';
 
         const sil = document.getElementById(`sil-${partId}`);
