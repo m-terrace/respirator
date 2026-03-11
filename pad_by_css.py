@@ -2,14 +2,14 @@ from PIL import Image, ImageChops, ImageStat
 import os
 
 targets = {
-    1: {"left": 375.5, "top": 107.3, "width": 115.7, "height": 122.8},
-    2: {"left": 681.6, "top": 164.0, "width": 119.4, "height": 42.7},
-    3: {"left": 661.6, "top": 179.5, "width": 29.5, "height": 55.9},
-    4: {"left": 452.2, "top": 217.7, "width": 31.7, "height": 33.6},
-    5: {"left": 545.2, "top": 144.0, "width": 65.0, "height": 93.7},
-    6: {"left": 547.8, "top": 132.7, "width": 60.5, "height": 39.3},
-    7: {"left": 374.0, "top": 216.9, "width": 450.5, "height": 226.4},
-    8: {"left": 460.5, "top": 123.2, "width": 107.3, "height": 159.1}
+    1: {"left": 375.5, "top": 52.3, "width": 115.7, "height": 122.8},
+    2: {"left": 681.6, "top": 109.0, "width": 119.4, "height": 42.7},
+    3: {"left": 661.6, "top": 124.5, "width": 29.5, "height": 55.9},
+    4: {"left": 452.2, "top": 162.7, "width": 31.7, "height": 33.6},
+    5: {"left": 545.2, "top": 89.0, "width": 65.0, "height": 93.7},
+    6: {"left": 547.8, "top": 77.7, "width": 60.5, "height": 39.3},
+    7: {"left": 374.0, "top": 161.9, "width": 450.5, "height": 226.4},
+    8: {"left": 460.5, "top": 68.2, "width": 107.3, "height": 159.1}
 }
 
 parts = ["respirator", "bag", "connect", "filter", "humidifier1", "humidifier2", "kairo1", "kairo2"]
