@@ -74,34 +74,36 @@ const ScaleManager = {
  * シナリオデータ定義
  */
 const SCENARIO_DATA = [
-    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ回路をくんでみよう。\n下段にある機材を上段の正しい位置にドラッグするんだ。' },
-    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ最初は僕がやってみせるね。\nまず下段の人工呼吸器をつかんでと・・・' },
+    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ回路をくんでみよう。下段にある機材を上段の正しい位置にドラッグするんだ。', voice: 'sato_1' },
+    { type: 'dialogue', speaker: 'Satou', text: '最初は僕がやってみせるね。', voice: 'sato_2' },
+    { type: 'dialogue', speaker: 'Satou', text: 'まず下段の人工呼吸器をつかんでと・・・', voice: 'sato_3' },
     { type: 'auto_drag', target: 1 }, // respirator
-    { type: 'dialogue', speaker: 'Satou', text: 'はい。人工呼吸器はここだとします。' },
-    { type: 'dialogue', speaker: 'Takei', text: 'なるほど。' },
-    { type: 'dialogue', speaker: 'Satou', text: 'テスト肺も置いておくね。\nこれを患者さんだと思ってください。' },
+    { type: 'dialogue', speaker: 'Satou', text: '人工呼吸器はここだとします。', voice: 'sato_4' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほど。', voice: 'takei_1' },
+    { type: 'dialogue', speaker: 'Satou', text: 'テスト肺も置いておくね。これを患者さんだと思ってください。', voice: 'sato_5' },
     { type: 'auto_drag', target: 2 }, // bag
-    { type: 'dialogue', speaker: 'Satou', text: 'じゃあ呼吸器の回路を辿っていこう。まず呼吸器の出口にはバクテリアフィルターをつけます。それを掴んで正しい位置にドラッグしてみよう。' },
-    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！' },
+    { type: 'dialogue', speaker: 'Satou', text: '呼吸器の回路を辿っていこう。', voice: 'sato_6' },
+    { type: 'dialogue', speaker: 'Satou', text: 'まず呼吸器の出口にはバクテリアフィルターをつけます。それを掴んで正しい位置にドラッグしてみよう。', voice: 'sato_7' },
+    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！', voice: 'takei_2' },
     { type: 'wait_drag', target: 4 }, // filter
-    { type: 'dialogue', speaker: 'Satou', text: 'OK！その調子' },
-    { type: 'dialogue', speaker: 'Satou', text: '次は短い呼吸回路だね。呼吸器と加温加湿器をつなぐんだ。' },
+    { type: 'dialogue', speaker: 'Satou', text: 'OK！その調子', voice: 'sato_8' },
+    { type: 'dialogue', speaker: 'Satou', text: '次は短い呼吸回路だね。呼吸器と加温加湿器をつなぐんだ。', voice: 'sato_9' },
     { type: 'wait_drag', target: 8 }, // kairo2
-    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器をセットしよう。' },
+    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器をセットしよう。', voice: 'sato_10' },
     { type: 'wait_drag', target: 5 }, // humidifier1
-    { type: 'dialogue', speaker: 'Satou', text: '加温加湿器に加湿チャンバーをセットしてみよう' },
+    { type: 'dialogue', speaker: 'Satou', text: '加温加湿器に加湿チャンバーをセットしてみよう', voice: 'sato_11' },
     { type: 'wait_drag', target: 6 }, // humidifier2
-    { type: 'dialogue', speaker: 'Takei', text: 'こうですね！' },
-    { type: 'dialogue', speaker: 'Satou', text: 'これで呼吸器から出てきた空気が加温加湿されるんだ。' },
-    { type: 'dialogue', speaker: 'Takei', text: 'なるほど' },
-    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器から出て、患者さんにつなぐ回路を繋いでみよう。\n患者さんから呼吸器に戻る回路とセットになってるよ。' },
-    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！' },
+    { type: 'dialogue', speaker: 'Takei', text: 'こうですね！', voice: 'takei_3' },
+    { type: 'dialogue', speaker: 'Satou', text: 'これで呼吸器から出てきた空気が加温加湿されるんだ。', voice: 'sato_12' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほど', voice: 'takei_4' },
+    { type: 'dialogue', speaker: 'Satou', text: '次は加温加湿器から出て、患者さんにつなぐ回路を繋いでみよう。患者さんから呼吸器に戻る回路とセットになってるよ。', voice: 'sato_13' },
+    { type: 'dialogue', speaker: 'Takei', text: 'やってみます！', voice: 'takei_5' },
     { type: 'wait_drag', target: 7 }, // kairo1
-    { type: 'dialogue', speaker: 'Satou', text: 'いいね！\n次はコネクターを繋ごう。\n柔らかい管で、患者さんの動きを和らげる働きをするよ。' },
-    { type: 'dialogue', speaker: 'Takei', text: 'なるほどー' },
+    { type: 'dialogue', speaker: 'Satou', text: 'いいね！次はコネクターを繋ごう。柔らかい管で、患者さんの動きを和らげる働きをするよ。', voice: 'sato_14' },
+    { type: 'dialogue', speaker: 'Takei', text: 'なるほどー', voice: 'takei_6' },
     { type: 'wait_drag', target: 3 }, // connect
-    { type: 'dialogue', speaker: 'Satou', text: 'これで完成！ナイスバッティン！' },
-    { type: 'dialogue', speaker: 'Takei', text: 'ありがとうございました！' }
+    { type: 'dialogue', speaker: 'Satou', text: 'これで完成！', voice: 'sato_15' },
+    { type: 'dialogue', speaker: 'Takei', text: 'ありがとうございました！', voice: 'takei_7' }
 ];
 
 /**
@@ -157,12 +159,45 @@ const ScenarioManager = {
         }
     },
 
+    pendingVoice: null,
+
+    playVoice(voiceId) {
+        // 再生中のボイスを止める
+        document.querySelectorAll('audio.character-voice').forEach(v => {
+            if (!v.paused) {
+                v.pause();
+                v.currentTime = 0;
+            }
+        });
+        if (voiceId) {
+            const voice = document.getElementById(voiceId);
+            if (voice) {
+                voice.currentTime = 0;
+                voice.play().catch(() => { });
+            }
+        }
+    },
+
+    playPendingVoice() {
+        if (this.pendingVoice) {
+            const voice = document.getElementById(this.pendingVoice);
+            if (voice) {
+                voice.currentTime = 0;
+                voice.play().catch(() => { });
+            }
+            this.pendingVoice = null;
+        }
+    },
+
     showDialogue(step) {
         document.body.classList.add('dialogue-active');
         this.overlay.classList.remove('hidden');
 
         this.speakerName.textContent = step.speaker;
         this.setCharactersState(step.speaker);
+
+        // ボイス再生
+        this.playVoice(step.voice || null);
 
         // テキストアニメーション
         this.dialogueText.textContent = '';
@@ -248,8 +283,8 @@ const GameManager = {
 
         ScenarioManager.init();
 
-        // 最初のクリック/タップでBGMを再生する（ブラウザの自動再生ブロック対策）
-        const playBgmOnInteraction = () => {
+        // 最初のクリック/タップでBGMとシナリオを同時に開始する（自動再生ブロック対策）
+        const startOnInteraction = () => {
             if (!this.bgmStarted) {
                 const bgm = document.getElementById('se-bgm');
                 if (bgm) {
@@ -257,15 +292,13 @@ const GameManager = {
                     bgm.play().catch(e => console.log("Audio play blocked."));
                 }
                 this.bgmStarted = true;
+                ScenarioManager.startScenerio();
             }
-            document.removeEventListener('click', playBgmOnInteraction);
-            document.removeEventListener('touchstart', playBgmOnInteraction);
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('touchstart', startOnInteraction);
         };
-        document.addEventListener('click', playBgmOnInteraction);
-        document.addEventListener('touchstart', playBgmOnInteraction, { passive: true });
-
-        // シナリオは画面クリックを待たずに即座に開始させる
-        ScenarioManager.startScenerio();
+        document.addEventListener('click', startOnInteraction, true); // capture で先に発火
+        document.addEventListener('touchstart', startOnInteraction, { capture: true, passive: true });
     },
 
     cacheInitialPositions() {
